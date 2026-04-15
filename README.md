@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# Kanban Board (Trello Clone)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This project is a modern Kanban board application inspired by tools like Trello.
+It allows users to manage tasks using a drag-and-drop interface across multiple columns.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The application is built with React and TypeScript, focusing on clean architecture, scalability, and a strong user experience.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+### MVP
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Create and delete tasks (cards)
+* Multiple columns (e.g. Todo, In Progress, Done)
+* Drag & Drop between columns
+* Responsive UI
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Planned Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* Edit task details (title, description)
+* Reorder tasks within columns
+* Local storage persistence
+* Multiple boards
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Future Enhancements
+
+* User authentication
+* Backend integration (API)
+* Realtime updates (WebSockets)
+
+---
+
+## Tech Stack
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Zustand (state management)
+* dnd-kit (drag & drop)
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd kanban-board
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Run development server
+
+```bash
+npm run dev
+```
+
+The app will be available at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Project Structure
+
+```
+src/
+ ├── components/   # UI components (Board, Column, Card)
+ ├── store/        # Zustand state management
+ ├── types/        # TypeScript types
+ ├── pages/        # Page components
+```
+
+---
+
+## Learning Goals
+
+This project demonstrates:
+
+* Component-based architecture with React
+* Type-safe development using TypeScript
+* Complex state management
+* Drag-and-drop functionality
+* Clean and scalable code structure
+
+---
+
+## Status
+
+🚧 Work in progress
+
+---
+
+## License
+
+MIT
+
+## Author
+
+Ivo Günther - Fullstack Web Developer
