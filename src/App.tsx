@@ -1,7 +1,11 @@
-import './App.css'
+import Board from "./components/Board";
 
 function App() {
-  return <h1>Kanban Board</h1>;
+  return (
+    <div className="min-h-screen bg-gray-200">
+      <Board />
+    </div>
+  );
 }
 
 export default App;
