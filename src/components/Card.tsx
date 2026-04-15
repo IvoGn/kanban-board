@@ -1,6 +1,8 @@
-import { useDraggable } from "@dnd-kit/core";
 import type { Card as CardType } from "../types";
 import { useBoardStore } from "../store/boardStore";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type Props = {
   card: CardType;
@@ -10,7 +12,14 @@ type Props = {
 export default function Card({ card, columnId }: Props) {
   const { deleteCard } = useBoardStore();
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: card.id,
     data: {
       columnId,
@@ -18,13 +27,13 @@ export default function Card({ card, columnId }: Props) {
   });
 
   const style = {
-    transform: transform
-      ? `translate(${transform.x}px, ${transform.y}px)`
-      : undefined,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0 : 1, // 🔥 wichtig für smooth UX
   };
 
   return (
-   <div
+    <div
       ref={setNodeRef}
       style={style}
       className="bg-white p-2 rounded shadow flex justify-between items-center hover:bg-gray-50"
@@ -32,11 +41,11 @@ export default function Card({ card, columnId }: Props) {
       <span className="flex items-center gap-2">
         {/* Drag Handle */}
         <span
-        {...listeners}
-        {...attributes}
-        className="cursor-grab text-gray-400"
+          {...listeners}
+          {...attributes}
+          className="cursor-grab active:cursor-grabbing text-gray-400"
         >
-        ☰
+          ☰
         </span>
 
         {card.title}

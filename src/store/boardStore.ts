@@ -1,11 +1,16 @@
 import { create } from "zustand";
-import  type { Board } from "../types";
+import type { Board } from "../types";
 
 type BoardState = {
   board: Board;
   addCard: (columnId: string, title: string) => void;
   deleteCard: (cardId: string, columnId: string) => void;
   moveCard: (cardId: string, fromColumn: string, toColumn: string) => void;
+  moveCardWithinColumn: (
+    columnId: string,
+    activeId: string,
+    overId: string
+  ) => void;
 };
 
 export const useBoardStore = create<BoardState>((set) => ({
@@ -65,32 +70,57 @@ export const useBoardStore = create<BoardState>((set) => ({
       };
     }),
 
-    moveCard: (cardId, fromColumn, toColumn) =>
-      set((state) => {
-        if (fromColumn === toColumn) return state;
+  moveCard: (cardId, fromColumn, toColumn) =>
+    set((state) => {
+      if (fromColumn === toColumn) return state;
 
-        return {
+      return {
         board: {
-            ...state.board,
-            columns: {
+          ...state.board,
+          columns: {
             ...state.board.columns,
 
             [fromColumn]: {
-                ...state.board.columns[fromColumn],
-                cardIds: state.board.columns[fromColumn].cardIds.filter(
+              ...state.board.columns[fromColumn],
+              cardIds: state.board.columns[fromColumn].cardIds.filter(
                 (id) => id !== cardId
-                ),
+              ),
             },
 
             [toColumn]: {
-                ...state.board.columns[toColumn],
-                cardIds: [
+              ...state.board.columns[toColumn],
+              cardIds: [
                 ...state.board.columns[toColumn].cardIds,
                 cardId,
-                ],
+              ],
             },
-            },
+          },
         },
-        };
+      };
+    }),
+
+  moveCardWithinColumn: (columnId, activeId, overId) =>
+    set((state) => {
+      const column = state.board.columns[columnId];
+
+      const oldIndex = column.cardIds.indexOf(activeId);
+      const newIndex = column.cardIds.indexOf(overId);
+
+      const newCardIds = [...column.cardIds];
+      const [moved] = newCardIds.splice(oldIndex, 1);
+      newCardIds.splice(newIndex, 0, moved);
+
+      return {
+        board: {
+          ...state.board,
+          columns: {
+            ...state.board.columns,
+            [columnId]: {
+              ...column,
+              cardIds: newCardIds,
+            },
+          },
+        },
+      };
     }),
 }));
