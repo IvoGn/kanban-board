@@ -103,6 +103,6 @@ This project demonstrates:
 
 ---
 
-## License
+## Author
 
-This project is for portfolio purposes.
+Ivo Günther - Fullstack Web Developer
