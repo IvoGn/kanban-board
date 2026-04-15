@@ -53,8 +53,9 @@ export default function Card({ card, columnId }: Props) {
 
       <button
         onClick={() => deleteCard(card.id, columnId)}
-        className="text-red-500 text-sm"
-      >
+        className="flex items-center justify-center w-7 h-7 rounded hover:bg-red-100 text-red-500 hover:text-red-600 transition cursor-pointer"
+        aria-label="Delete task"
+        >
         ✕
       </button>
     </div>
