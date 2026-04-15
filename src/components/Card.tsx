@@ -24,14 +24,23 @@ export default function Card({ card, columnId }: Props) {
   };
 
   return (
-    <div
+   <div
       ref={setNodeRef}
       style={style}
-      {...listeners}
-      {...attributes}
-      className="bg-white p-2 rounded shadow flex justify-between items-center hover:bg-gray-50 cursor-grab"
+      className="bg-white p-2 rounded shadow flex justify-between items-center hover:bg-gray-50"
     >
-      <span>{card.title}</span>
+      <span className="flex items-center gap-2">
+        {/* Drag Handle */}
+        <span
+        {...listeners}
+        {...attributes}
+        className="cursor-grab text-gray-400"
+        >
+        ☰
+        </span>
+
+        {card.title}
+      </span>
 
       <button
         onClick={() => deleteCard(card.id, columnId)}
