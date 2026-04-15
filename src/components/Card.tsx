@@ -4,6 +4,9 @@ import { useBoardStore } from "../store/boardStore";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
+
 type Props = {
   card: CardType;
   columnId: string;
@@ -32,6 +35,8 @@ export default function Card({ card, columnId }: Props) {
     opacity: isDragging ? 0 : 1,
   };
 
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div
       ref={setNodeRef}
@@ -52,12 +57,24 @@ export default function Card({ card, columnId }: Props) {
       </span>
 
       <button
-        onClick={() => deleteCard(card.id, columnId)}
+        onClick={(e) => {
+            e.stopPropagation();
+            setShowModal(true);
+        }}
         className="flex items-center justify-center w-7 h-7 rounded hover:bg-red-100 text-red-500 hover:text-red-600 transition cursor-pointer"
         aria-label="Delete task"
         >
         ✕
       </button>
+
+      <ConfirmModal
+        isOpen={showModal}
+        onCancel={() => setShowModal(false)}
+        onConfirm={() => {
+            deleteCard(card.id, columnId);
+            setShowModal(false);
+        }}
+      />
     </div>
   );
 }
