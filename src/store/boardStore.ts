@@ -5,6 +5,7 @@ type BoardState = {
   board: Board;
   addCard: (columnId: string, title: string) => void;
   deleteCard: (cardId: string, columnId: string) => void;
+  moveCard: (cardId: string, fromColumn: string, toColumn: string) => void;
 };
 
 export const useBoardStore = create<BoardState>((set) => ({
@@ -62,5 +63,34 @@ export const useBoardStore = create<BoardState>((set) => ({
           },
         },
       };
+    }),
+
+    moveCard: (cardId, fromColumn, toColumn) =>
+      set((state) => {
+        if (fromColumn === toColumn) return state;
+
+        return {
+        board: {
+            ...state.board,
+            columns: {
+            ...state.board.columns,
+
+            [fromColumn]: {
+                ...state.board.columns[fromColumn],
+                cardIds: state.board.columns[fromColumn].cardIds.filter(
+                (id) => id !== cardId
+                ),
+            },
+
+            [toColumn]: {
+                ...state.board.columns[toColumn],
+                cardIds: [
+                ...state.board.columns[toColumn].cardIds,
+                cardId,
+                ],
+            },
+            },
+        },
+        };
     }),
 }));
