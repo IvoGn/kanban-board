@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import  type { Board } from "../types";
-import { v4 as uuidv4 } from "uuid";
 
 type BoardState = {
   board: Board;
   addCard: (columnId: string, title: string) => void;
+  deleteCard: (cardId: string, columnId: string) => void;
 };
 
 export const useBoardStore = create<BoardState>((set) => ({
@@ -22,7 +22,7 @@ export const useBoardStore = create<BoardState>((set) => ({
 
   addCard: (columnId, title) =>
     set((state) => {
-      const newId = uuidv4();
+      const newId = crypto.randomUUID();
 
       return {
         board: {
@@ -36,6 +36,28 @@ export const useBoardStore = create<BoardState>((set) => ({
             [columnId]: {
               ...state.board.columns[columnId],
               cardIds: [...state.board.columns[columnId].cardIds, newId],
+            },
+          },
+        },
+      };
+    }),
+
+  deleteCard: (cardId, columnId) =>
+    set((state) => {
+      const newCards = { ...state.board.cards };
+      delete newCards[cardId];
+
+      return {
+        board: {
+          ...state.board,
+          cards: newCards,
+          columns: {
+            ...state.board.columns,
+            [columnId]: {
+              ...state.board.columns[columnId],
+              cardIds: state.board.columns[columnId].cardIds.filter(
+                (id) => id !== cardId
+              ),
             },
           },
         },
