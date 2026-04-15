@@ -29,7 +29,7 @@ export default function Card({ card, columnId }: Props) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0 : 1, // 🔥 wichtig für smooth UX
+    opacity: isDragging ? 0 : 1,
   };
 
   return (
