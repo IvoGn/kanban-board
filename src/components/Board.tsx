@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { useBoardStore } from "../store/boardStore";
@@ -13,6 +13,11 @@ export default function Board() {
   } = useBoardStore();
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [title, setTitle] = useState(board.title);
+
+  useEffect(() => {
+    setTitle(board.title);
+  }, [board.title]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -64,9 +69,16 @@ export default function Board() {
           <div className="mx-auto max-w-[1480px] rounded-[2rem] bg-white p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.15)]">
             <section className="mb-8 rounded-[1.75rem] bg-slate-100 p-6">
               <input
-                value={board.title}
-                onChange={(e) => setBoardTitle(e.target.value)}
-                className="w-full bg-transparent text-4xl font-semibold leading-tight text-slate-900 placeholder:text-slate-500 py-3 cursor-pointer focus:cursor-text focus:outline-none focus:ring-2 focus:ring-slate-400"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={() => setBoardTitle(title)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    setBoardTitle(title);
+                  }
+                }}
+                className="w-full bg-transparent text-4xl font-semibold leading-tight text-slate-900 placeholder:text-slate-500 py-3 cursor-text focus:outline-none focus:ring-2 focus:ring-slate-400"
                 placeholder="My project roadmap"
               />
             </section>
