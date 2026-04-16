@@ -36,6 +36,9 @@ type BoardState = {
   setBoard: (board: Board) => void;
   addCard: (columnId: string, title: string) => void;
   deleteCard: (cardId: string, columnId: string) => void;
+  addSubtask: (cardId: string, title: string) => void;
+  toggleSubtask: (cardId: string, subtaskId: string) => void;
+  deleteSubtask: (cardId: string, subtaskId: string) => void;
   moveCard: (cardId: string, fromColumn: string, toColumn: string) => void;
   moveCardWithinColumn: (
     columnId: string,
@@ -104,7 +107,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         ...state.board,
         cards: {
           ...state.board.cards,
-          [newId]: { id: newId, title },
+          [newId]: { id: newId, title, subtasks: [] },
         },
         columns: {
           ...state.board.columns,
@@ -112,6 +115,74 @@ export const useBoardStore = create<BoardState>((set, get) => ({
             ...state.board.columns[columnId],
             cardIds: [...state.board.columns[columnId].cardIds, newId],
           },
+        },
+      };
+
+      get().saveBoard(board);
+      return { board };
+    }),
+
+  addSubtask: (cardId: string, title: string) =>
+    set((state) => {
+      const card = state.board.cards[cardId];
+      const subtaskId = crypto.randomUUID();
+      const updatedCard = {
+        ...card,
+        subtasks: [
+          ...(card.subtasks ?? []),
+          { id: subtaskId, title, completed: false },
+        ],
+      };
+
+      const board = {
+        ...state.board,
+        cards: {
+          ...state.board.cards,
+          [cardId]: updatedCard,
+        },
+      };
+
+      get().saveBoard(board);
+      return { board };
+    }),
+
+  toggleSubtask: (cardId: string, subtaskId: string) =>
+    set((state) => {
+      const card = state.board.cards[cardId];
+      const updatedCard = {
+        ...card,
+        subtasks: card.subtasks?.map((subtask) =>
+          subtask.id === subtaskId
+            ? { ...subtask, completed: !subtask.completed }
+            : subtask
+        ),
+      };
+
+      const board = {
+        ...state.board,
+        cards: {
+          ...state.board.cards,
+          [cardId]: updatedCard,
+        },
+      };
+
+      get().saveBoard(board);
+      return { board };
+    }),
+
+  deleteSubtask: (cardId: string, subtaskId: string) =>
+    set((state) => {
+      const card = state.board.cards[cardId];
+      const updatedCard = {
+        ...card,
+        subtasks: card.subtasks?.filter((subtask) => subtask.id !== subtaskId),
+      };
+
+      const board = {
+        ...state.board,
+        cards: {
+          ...state.board.cards,
+          [cardId]: updatedCard,
         },
       };
 

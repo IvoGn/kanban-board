@@ -13,7 +13,8 @@ type Props = {
 };
 
 export default function Card({ card, columnId }: Props) {
-  const { deleteCard } = useBoardStore();
+  const { deleteCard, addSubtask, toggleSubtask, deleteSubtask } = useBoardStore();
+  const [subtaskTitle, setSubtaskTitle] = useState("");
 
   const {
     attributes,
@@ -41,38 +42,106 @@ export default function Card({ card, columnId }: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-white p-2 rounded shadow flex justify-between items-center hover:bg-gray-50"
+      className="bg-white p-4 rounded shadow hover:bg-gray-50 transition"
     >
-      <span className="flex items-center gap-2 text-slate-900">
-        {/* Drag Handle */}
-        <span
-          {...listeners}
-          {...attributes}
-          className="cursor-grab active:cursor-grabbing text-gray-400"
-        >
-          ☰
+      <div className="flex items-start justify-between gap-3">
+        <span className="flex items-center gap-2 text-slate-900 text-sm font-semibold">
+          <span
+            {...listeners}
+            {...attributes}
+            className="cursor-grab active:cursor-grabbing text-gray-400"
+          >
+            ☰
+          </span>
+          {card.title}
         </span>
 
-        {card.title}
-      </span>
-
-      <button
-        onClick={(e) => {
+        <button
+          onClick={(e) => {
             e.stopPropagation();
             setShowModal(true);
-        }}
-        className="flex items-center justify-center w-7 h-7 rounded hover:bg-red-100 text-red-500 hover:text-red-600 transition cursor-pointer"
-        aria-label="Delete task"
+          }}
+          className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-red-100 text-red-500 hover:text-red-600 transition cursor-pointer"
+          aria-label="Delete task"
         >
-        ✕
-      </button>
+          ✕
+        </button>
+      </div>
+
+      <div className="mt-4 w-full">
+        <div className="mb-2 flex items-center justify-between gap-2 text-sm text-slate-500">
+          <span>
+            {card.subtasks?.filter((subtask) => subtask.completed).length ?? 0}/{card.subtasks?.length ?? 0} done
+          </span>
+        </div>
+
+        <div className="space-y-2 mb-3">
+          {(card.subtasks ?? []).map((subtask) => (
+            <div
+              key={subtask.id}
+              className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-800"
+            >
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={subtask.completed}
+                  onChange={() => toggleSubtask(card.id, subtask.id)}
+                  className="h-4 w-4 cursor-pointer text-slate-900 transition"
+                />
+                <span className={subtask.completed ? "line-through text-slate-400" : ""}>
+                  {subtask.title}
+                </span>
+              </label>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteSubtask(card.id, subtask.id);
+                }}
+                className="rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                aria-label="Delete subtask"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <input
+            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-900 outline-none focus:border-slate-400"
+            value={subtaskTitle}
+            onChange={(e) => setSubtaskTitle(e.target.value)}
+            placeholder="Add subtask..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (subtaskTitle.trim()) {
+                  addSubtask(card.id, subtaskTitle.trim());
+                  setSubtaskTitle("");
+                }
+              }
+            }}
+          />
+          <button
+            onClick={() => {
+              if (!subtaskTitle.trim()) return;
+              addSubtask(card.id, subtaskTitle.trim());
+              setSubtaskTitle("");
+            }}
+            className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+          >
+            Add
+          </button>
+        </div>
+      </div>
 
       <ConfirmModal
         isOpen={showModal}
         onCancel={() => setShowModal(false)}
         onConfirm={() => {
-            deleteCard(card.id, columnId);
-            setShowModal(false);
+          deleteCard(card.id, columnId);
+          setShowModal(false);
         }}
       />
     </div>

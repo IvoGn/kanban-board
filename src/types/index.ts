@@ -1,7 +1,14 @@
+export type Subtask = {
+  id: string;
+  title: string;
+  completed: boolean;
+};
+
 export type Card = {
   id: string;
   title: string;
   description?: string;
+  subtasks?: Subtask[];
 };
 
 export type Column = {
