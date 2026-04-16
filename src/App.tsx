@@ -1,8 +1,9 @@
 import Board from "./components/Board";
+import "./App.css";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-200">
+    <div className="min-h-screen bg-slate-100">
       <Board />
     </div>
   );

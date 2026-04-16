@@ -11,10 +11,12 @@ type BoardState = {
     activeId: string,
     overId: string
   ) => void;
+  setBoardTitle: (title: string) => void;
 };
 
 export const useBoardStore = create<BoardState>((set) => ({
   board: {
+    title: "Product Launch Board",
     columns: {
       "col-1": { id: "col-1", title: "Todo", cardIds: ["card-1"] },
       "col-2": { id: "col-2", title: "Doing", cardIds: [] },
@@ -25,6 +27,14 @@ export const useBoardStore = create<BoardState>((set) => ({
     },
     columnOrder: ["col-1", "col-2", "col-3"],
   },
+
+  setBoardTitle: (title) =>
+    set((state) => ({
+      board: {
+        ...state.board,
+        title,
+      },
+    })),
 
   addCard: (columnId, title) =>
     set((state) => {

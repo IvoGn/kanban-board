@@ -11,6 +11,7 @@ export type Column = {
 };
 
 export type Board = {
+  title: string;
   columns: Record<string, Column>;
   cards: Record<string, Card>;
   columnOrder: string[];

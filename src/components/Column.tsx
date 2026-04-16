@@ -31,8 +31,16 @@ export default function Column({ column }: Props) {
   };
 
   return (
-    <div ref={setNodeRef} className="bg-gray-100 rounded p-3 w-64">
-      <h2 className="font-bold mb-2">{column.title}</h2>
+    <div
+      ref={setNodeRef}
+      className="w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/50"
+    >
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-3 py-3">
+        <h2 className="text-lg font-semibold text-slate-900">{column.title}</h2>
+        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+          {column.cardIds.length}
+        </span>
+      </div>
 
       <SortableContext
         items={column.cardIds}
@@ -53,11 +61,11 @@ export default function Column({ column }: Props) {
       </SortableContext>
 
       {column.cardIds.length === 0 && (
-        <p className="text-sm text-gray-400 mb-2">No tasks</p>
+        <p className="text-sm text-slate-500 mb-4">No tasks</p>
       )}
 
       <input
-        className="w-full p-1 mb-2 border rounded"
+        className="w-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 rounded-lg outline-none transition focus:border-slate-300"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={(e) => {
@@ -68,9 +76,9 @@ export default function Column({ column }: Props) {
 
       <button
         onClick={handleAdd}
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
+        className="mt-3 w-full bg-slate-900 text-white px-3 py-2 rounded-lg transition hover:bg-slate-800"
       >
-        Add
+        Add task
       </button>
     </div>
   );
