@@ -16,6 +16,7 @@ type Props = {
 export default function Column({ column }: Props) {
   const { board, addCard } = useBoardStore();
   const [title, setTitle] = useState("");
+  const [showAddTask, setShowAddTask] = useState(false);
 
   const { setNodeRef } = useDroppable({
     id: column.id,
@@ -28,6 +29,7 @@ export default function Column({ column }: Props) {
     if (!title.trim()) return;
     addCard(column.id, title);
     setTitle("");
+    setShowAddTask(false);
   };
 
   return (
@@ -64,22 +66,46 @@ export default function Column({ column }: Props) {
         <p className="text-sm text-slate-500 mb-4">No tasks</p>
       )}
 
-      <input
-        className="w-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 rounded-lg outline-none transition focus:border-slate-400"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleAdd();
-        }}
-        placeholder="New task..."
-      />
-
-      <button
-        onClick={handleAdd}
-        className="mt-3 w-full bg-slate-900 text-white px-3 py-2 rounded-lg transition hover:bg-slate-800 cursor-pointer"
-      >
-        Add task
-      </button>
+      {showAddTask ? (
+        <div className="space-y-2">
+          <input
+            className="w-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 rounded-lg outline-none transition focus:border-slate-400"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAdd();
+            }}
+            placeholder="Add a new task..."
+          />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleAdd}
+              className="flex-1 rounded-lg bg-slate-900 text-white px-3 py-2 text-sm font-medium transition hover:bg-slate-800 cursor-pointer"
+            >
+              Add task
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowAddTask(false);
+                setTitle("");
+              }}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowAddTask(true)}
+          className="flex w-full items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+        >
+          <span className="text-lg">+</span>
+          Add a new task
+        </button>
+      )}
     </div>
   );
 }

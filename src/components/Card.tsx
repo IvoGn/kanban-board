@@ -37,6 +37,7 @@ export default function Card({ card, columnId }: Props) {
   };
 
   const [showModal, setShowModal] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
 
   return (
     <div
@@ -69,11 +70,13 @@ export default function Card({ card, columnId }: Props) {
       </div>
 
       <div className="mt-4 w-full">
-        <div className="mb-2 flex items-center justify-between gap-2 text-sm text-slate-500">
-          <span>
-            {card.subtasks?.filter((subtask) => subtask.completed).length ?? 0}/{card.subtasks?.length ?? 0} done
-          </span>
-        </div>
+        {card.subtasks && card.subtasks.length > 0 ? (
+          <div className="mb-2 flex items-center justify-between gap-2 text-sm text-slate-500">
+            <span>
+              {card.subtasks.filter((subtask) => subtask.completed).length}/{card.subtasks.length} done
+            </span>
+          </div>
+        ) : null}
 
         <div className="space-y-2 mb-3">
           {(card.subtasks ?? []).map((subtask) => (
@@ -107,33 +110,58 @@ export default function Card({ card, columnId }: Props) {
           ))}
         </div>
 
-        <div className="flex gap-2">
-          <input
-            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-900 outline-none focus:border-slate-400"
-            value={subtaskTitle}
-            onChange={(e) => setSubtaskTitle(e.target.value)}
-            placeholder="Add subtask..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                if (subtaskTitle.trim()) {
+        {showAddTask ? (
+          <div className="space-y-2">
+            <input
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-900 outline-none focus:border-slate-400"
+              value={subtaskTitle}
+              onChange={(e) => setSubtaskTitle(e.target.value)}
+              placeholder="Enter subtask..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (subtaskTitle.trim()) {
+                    addSubtask(card.id, subtaskTitle.trim());
+                    setSubtaskTitle("");
+                    setShowAddTask(false);
+                  }
+                }
+              }}
+            />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  if (!subtaskTitle.trim()) return;
                   addSubtask(card.id, subtaskTitle.trim());
                   setSubtaskTitle("");
-                }
-              }
-            }}
-          />
+                  setShowAddTask(false);
+                }}
+                className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+              >
+                Add subtask
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAddTask(false);
+                  setSubtaskTitle("");
+                }}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
           <button
-            onClick={() => {
-              if (!subtaskTitle.trim()) return;
-              addSubtask(card.id, subtaskTitle.trim());
-              setSubtaskTitle("");
-            }}
-            className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+            type="button"
+            onClick={() => setShowAddTask(true)}
+            className="flex w-full items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer"
           >
-            Add
+            <span className="text-lg">+</span>
+            Add a new subtask
           </button>
-        </div>
+        )}
       </div>
 
       <ConfirmModal
