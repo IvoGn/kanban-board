@@ -49,7 +49,7 @@ export default function ConfirmModal({
         <div className="flex gap-2 pt-2">
           <button
             onClick={onCancel}
-            className="w-1/2 px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200"
+            className="w-1/2 px-3 py-2 rounded-md bg-gray-100 text-slate-700 hover:bg-gray-200"
           >
             Cancel
           </button>

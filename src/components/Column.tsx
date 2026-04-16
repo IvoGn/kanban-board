@@ -65,7 +65,7 @@ export default function Column({ column }: Props) {
       )}
 
       <input
-        className="w-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 rounded-lg outline-none transition focus:border-slate-300"
+        className="w-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 rounded-lg outline-none transition focus:border-slate-400"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={(e) => {

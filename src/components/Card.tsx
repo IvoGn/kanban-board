@@ -43,7 +43,7 @@ export default function Card({ card, columnId }: Props) {
       style={style}
       className="bg-white p-2 rounded shadow flex justify-between items-center hover:bg-gray-50"
     >
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 text-slate-900">
         {/* Drag Handle */}
         <span
           {...listeners}
