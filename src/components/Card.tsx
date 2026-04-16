@@ -42,10 +42,10 @@ export default function Card({ card, columnId }: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-white p-4 rounded shadow hover:bg-gray-50 transition"
+      className="bg-white p-4 rounded shadow transition text-slate-950 hover:ring-2 hover:ring-blue-500"
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="flex items-center gap-2 text-slate-900 text-sm font-semibold">
+        <span className="flex items-center gap-2 text-slate-950 text-sm font-semibold">
           <span
             {...listeners}
             {...attributes}

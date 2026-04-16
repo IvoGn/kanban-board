@@ -97,7 +97,7 @@ export default function Board() {
 
         <DragOverlay>
         {activeCard ? (
-          <div className="bg-white p-2 rounded shadow flex items-center gap-2">
+          <div className="bg-white p-2 rounded shadow flex items-center gap-2 text-slate-950">
             <span className="text-gray-400">☰</span>
             {activeCard.title}
           </div>
