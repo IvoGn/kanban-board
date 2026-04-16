@@ -76,7 +76,7 @@ export default function Column({ column }: Props) {
 
       <button
         onClick={handleAdd}
-        className="mt-3 w-full bg-slate-900 text-white px-3 py-2 rounded-lg transition hover:bg-slate-800"
+        className="mt-3 w-full bg-slate-900 text-white px-3 py-2 rounded-lg transition hover:bg-slate-800 cursor-pointer"
       >
         Add task
       </button>

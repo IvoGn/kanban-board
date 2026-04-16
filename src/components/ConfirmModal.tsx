@@ -49,14 +49,14 @@ export default function ConfirmModal({
         <div className="flex gap-2 pt-2">
           <button
             onClick={onCancel}
-            className="w-1/2 px-3 py-2 rounded-md bg-gray-100 text-slate-700 hover:bg-gray-200"
+            className="w-1/2 px-3 py-2 rounded-md bg-gray-100 text-slate-700 hover:bg-gray-200 cursor-pointer"
           >
             Cancel
           </button>
 
           <button
             onClick={onConfirm}
-            className="w-1/2 px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600"
+            className="w-1/2 px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 cursor-pointer"
           >
             Delete
           </button>

@@ -78,7 +78,7 @@ export default function Board() {
                     setBoardTitle(title);
                   }
                 }}
-                className="w-full bg-transparent text-4xl font-semibold leading-tight text-slate-900 placeholder:text-slate-500 py-3 cursor-text focus:outline-none focus:ring-2 focus:ring-slate-400"
+                className="w-full bg-transparent text-4xl font-semibold leading-tight text-slate-900 placeholder:text-slate-500 py-3 cursor-pointer focus:cursor-text focus:outline-none focus:ring-2 focus:ring-slate-400"
                 placeholder="My project roadmap"
               />
             </section>
