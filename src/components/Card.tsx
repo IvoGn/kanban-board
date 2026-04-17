@@ -5,7 +5,7 @@ import { useTranslation } from "../LanguageContext";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmModal from "./ConfirmModal";
 
 type Props = {
@@ -14,11 +14,30 @@ type Props = {
 };
 
 export default function Card({ card, columnId }: Props) {
-  const { deleteCard, addSubtask, toggleSubtask, deleteSubtask } = useBoardStore();
+  const {
+    deleteCard,
+    addSubtask,
+    toggleSubtask,
+    deleteSubtask,
+    setCardTitle,
+    setSubtaskTitle,
+  } = useBoardStore();
   const { t } = useTranslation();
-  const [subtaskTitle, setSubtaskTitle] = useState("");
+  const [subtaskTitleInput, setSubtaskTitleInput] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [titleInput, setTitleInput] = useState(card.title);
+  const [subtaskInputs, setSubtaskInputs] = useState<Record<string, string>>({});
 
   // Each card has its own local UI state for adding subtasks and showing modals.
+
+  useEffect(() => {
+    if (!isEditing) {
+      setTitleInput(card.title);
+      setSubtaskInputs(
+        Object.fromEntries((card.subtasks ?? []).map((subtask) => [subtask.id, subtask.title]))
+      );
+    }
+  }, [card.title, card.subtasks, isEditing]);
 
   // Make this card draggable with dnd-kit sortable support.
   // Enable drag-and-drop behavior for this card.
@@ -50,6 +69,36 @@ export default function Card({ card, columnId }: Props) {
   // The confirmation modal is shown when the delete button is clicked.
   // showAddTask toggles the inline subtask form.
 
+  const saveCardTitle = () => {
+    const trimmed = titleInput.trim();
+    if (trimmed && trimmed !== card.title) {
+      setCardTitle(card.id, trimmed);
+    }
+    setTitleInput(card.title);
+  };
+
+  const saveSubtaskTitle = (subtaskId: string) => {
+    const title = subtaskInputs[subtaskId]?.trim() ?? "";
+    if (!title) {
+      const original = card.subtasks?.find((subtask) => subtask.id === subtaskId)?.title;
+      setSubtaskInputs((prev) => ({
+        ...prev,
+        [subtaskId]: original ?? "",
+      }));
+      return;
+    }
+
+    const subtask = card.subtasks?.find((subtask) => subtask.id === subtaskId);
+    if (subtask && subtask.title !== title) {
+      setSubtaskTitle(card.id, subtaskId, title);
+    }
+  };
+
+  const saveAllEdits = () => {
+    saveCardTitle();
+    (card.subtasks ?? []).forEach((subtask) => saveSubtaskTitle(subtask.id));
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -65,20 +114,67 @@ export default function Card({ card, columnId }: Props) {
           >
             ☰
           </span>
-          {card.title}
+          {isEditing ? (
+            <input
+              value={titleInput}
+              onChange={(e) => setTitleInput(e.target.value)}
+              onBlur={saveCardTitle}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  saveCardTitle();
+                }
+              }}
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-sm font-semibold text-slate-900 outline-none focus:border-slate-400"
+            />
+          ) : (
+            card.title
+          )}
         </span>
 
-        {/* Open the confirmation modal instead of deleting immediately. */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowModal(true);
-          }}
-          className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-red-100 text-red-500 hover:text-red-600 transition cursor-pointer"
-          aria-label={t("deleteTaskAria")}
-        >
-          ✕
-        </button>
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  saveAllEdits();
+                  setIsEditing(false);
+                }}
+                className="rounded-full bg-slate-900 text-white w-8 h-8 flex items-center justify-center hover:bg-slate-800 transition"
+                aria-label={t("saveTaskAria")}
+              >
+                ✓
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowModal(true);
+                }}
+                className="rounded-full bg-red-100 text-red-600 w-8 h-8 flex items-center justify-center hover:bg-red-200 transition"
+                aria-label={t("deleteTaskAria")}
+              >
+                ✕
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setIsEditing(true);
+                setTitleInput(card.title);
+                setSubtaskInputs(
+                  Object.fromEntries((card.subtasks ?? []).map((subtask) => [subtask.id, subtask.title]))
+                );
+              }}
+              className="rounded-full bg-slate-100 text-slate-700 w-8 h-8 flex items-center justify-center hover:bg-slate-200 transition"
+              aria-label={t("editTaskAria")}
+            >
+              ✎
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4 w-full">
@@ -97,16 +193,36 @@ export default function Card({ card, columnId }: Props) {
               key={subtask.id}
               className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-800"
             >
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer flex-1">
                 <input
                   type="checkbox"
                   checked={subtask.completed}
                   onChange={() => toggleSubtask(card.id, subtask.id)}
                   className="h-4 w-4 cursor-pointer text-slate-900 transition"
                 />
-                <span className={subtask.completed ? "line-through text-slate-400" : ""}>
-                  {subtask.title}
-                </span>
+                {isEditing ? (
+                  <input
+                    value={subtaskInputs[subtask.id] ?? subtask.title}
+                    onChange={(e) =>
+                      setSubtaskInputs((prev) => ({
+                        ...prev,
+                        [subtask.id]: e.target.value,
+                      }))
+                    }
+                    onBlur={() => saveSubtaskTitle(subtask.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        saveSubtaskTitle(subtask.id);
+                      }
+                    }}
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm text-slate-900 outline-none focus:border-slate-400"
+                  />
+                ) : (
+                  <span className={subtask.completed ? "line-through text-slate-400" : ""}>
+                    {subtask.title}
+                  </span>
+                )}
               </label>
 
               <button
@@ -128,15 +244,15 @@ export default function Card({ card, columnId }: Props) {
           <div className="space-y-2">
             <input
               className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-sm text-slate-900 outline-none focus:border-slate-400"
-              value={subtaskTitle}
-              onChange={(e) => setSubtaskTitle(e.target.value)}
+              value={subtaskTitleInput}
+              onChange={(e) => setSubtaskTitleInput(e.target.value)}
               placeholder={t("enterSubtaskPlaceholder")}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  if (subtaskTitle.trim()) {
-                    addSubtask(card.id, subtaskTitle.trim());
-                    setSubtaskTitle("");
+                  if (subtaskTitleInput.trim()) {
+                    addSubtask(card.id, subtaskTitleInput.trim());
+                    setSubtaskTitleInput("");
                     setShowAddTask(false);
                   }
                 }
@@ -145,9 +261,9 @@ export default function Card({ card, columnId }: Props) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
-                  if (!subtaskTitle.trim()) return;
-                  addSubtask(card.id, subtaskTitle.trim());
-                  setSubtaskTitle("");
+                  if (!subtaskTitleInput.trim()) return;
+                  addSubtask(card.id, subtaskTitleInput.trim());
+                  setSubtaskTitleInput("");
                   setShowAddTask(false);
                 }}
                 className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
@@ -158,7 +274,7 @@ export default function Card({ card, columnId }: Props) {
                 type="button"
                 onClick={() => {
                   setShowAddTask(false);
-                  setSubtaskTitle("");
+                  setSubtaskTitleInput("");
                 }}
                 className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 cursor-pointer"
               >

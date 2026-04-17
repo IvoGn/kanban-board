@@ -57,6 +57,8 @@ type BoardState = {
   addCard: (columnId: string, title: string) => void;
   deleteCard: (cardId: string, columnId: string) => void;
   addSubtask: (cardId: string, title: string) => void;
+  setCardTitle: (cardId: string, title: string) => void;
+  setSubtaskTitle: (cardId: string, subtaskId: string, title: string) => void;
   toggleSubtask: (cardId: string, subtaskId: string) => void;
   deleteSubtask: (cardId: string, subtaskId: string) => void;
   moveCard: (cardId: string, fromColumn: string, toColumn: string) => void;
@@ -157,6 +159,48 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           ...(card.subtasks ?? []),
           { id: subtaskId, title, completed: false },
         ],
+      };
+
+      const board = {
+        ...state.board,
+        cards: {
+          ...state.board.cards,
+          [cardId]: updatedCard,
+        },
+      };
+
+      get().saveBoard(board);
+      return { board };
+    }),
+
+  setCardTitle: (cardId: string, title: string) =>
+    set((state) => {
+      const card = state.board.cards[cardId];
+      const updatedCard = {
+        ...card,
+        title,
+      };
+
+      const board = {
+        ...state.board,
+        cards: {
+          ...state.board.cards,
+          [cardId]: updatedCard,
+        },
+      };
+
+      get().saveBoard(board);
+      return { board };
+    }),
+
+  setSubtaskTitle: (cardId: string, subtaskId: string, title: string) =>
+    set((state) => {
+      const card = state.board.cards[cardId];
+      const updatedCard = {
+        ...card,
+        subtasks: card.subtasks?.map((subtask) =>
+          subtask.id === subtaskId ? { ...subtask, title } : subtask
+        ),
       };
 
       const board = {
