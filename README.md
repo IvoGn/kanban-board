@@ -17,6 +17,7 @@ The application is built with React and TypeScript, focusing on clean architectu
 * Multiple columns (e.g. Todo, In Progress, Done)
 * Drag & Drop between columns
 * Reorder tasks within the same column
+* Edit task details (title, description)
 * Local storage persistence
 * Optional backend sync
 * Subtask creation, completion toggles, and deletion
@@ -25,7 +26,6 @@ The application is built with React and TypeScript, focusing on clean architectu
 
 ### Remaining Work
 
-* Edit task details (title, description)
 * Multiple boards
 * Better backend integration (API)
 * Realtime updates (WebSockets)
