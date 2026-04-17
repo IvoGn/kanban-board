@@ -14,6 +14,7 @@ export type Card = {
 export type Column = {
   id: string;
   title: string;
+  titleKey?: "columnTodo" | "columnDoing" | "columnDone";
   cardIds: string[];
 };
 

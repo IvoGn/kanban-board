@@ -3,6 +3,8 @@ import { DndContext, DragOverlay } from "@dnd-kit/core";
 import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { useBoardStore } from "../store/boardStore";
 import Column from "./Column";
+import LanguageSwitch from "./LanguageSwitch";
+import { useTranslation } from "../LanguageContext";
 
 export default function Board() {
   const {
@@ -11,6 +13,7 @@ export default function Board() {
     moveCardWithinColumn,
     setBoardTitle,
   } = useBoardStore();
+  const { t } = useTranslation();
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [title, setTitle] = useState(board.title);
@@ -67,6 +70,9 @@ export default function Board() {
       <div className="min-h-screen bg-slate-100 py-8">
         <div className="w-full px-4">
           <div className="mx-auto max-w-[1480px] rounded-[2rem] bg-white p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.15)]">
+            <div className="mb-4 flex justify-end">
+              <LanguageSwitch />
+            </div>
             <section className="mb-8 rounded-[1.75rem] bg-slate-100 p-6">
               <input
                 value={title}
@@ -79,7 +85,7 @@ export default function Board() {
                   }
                 }}
                 className="w-full bg-transparent text-4xl font-semibold leading-tight text-slate-900 placeholder:text-slate-500 py-3 cursor-pointer focus:cursor-text focus:outline-none focus:ring-2 focus:ring-slate-400"
-                placeholder="My project roadmap"
+                placeholder={t("boardTitlePlaceholder")}
               />
             </section>
 

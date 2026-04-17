@@ -5,14 +5,29 @@ const BACKEND_URL = "http://localhost:4000";
 const LOCAL_STORAGE_KEY = "kanban-board-state";
 
 const defaultBoard: Board = {
-  title: "Product Launch Board",
+  title: "Produkt-Launch-Board",
   columns: {
-    "col-1": { id: "col-1", title: "Todo", cardIds: ["card-1"] },
-    "col-2": { id: "col-2", title: "Doing", cardIds: [] },
-    "col-3": { id: "col-3", title: "Done", cardIds: [] },
+    "col-1": {
+      id: "col-1",
+      title: "Zu erledigen",
+      titleKey: "columnTodo",
+      cardIds: ["card-1"],
+    },
+    "col-2": {
+      id: "col-2",
+      title: "In Arbeit",
+      titleKey: "columnDoing",
+      cardIds: [],
+    },
+    "col-3": {
+      id: "col-3",
+      title: "Erledigt",
+      titleKey: "columnDone",
+      cardIds: [],
+    },
   },
   cards: {
-    "card-1": { id: "card-1", title: "First Task" },
+    "card-1": { id: "card-1", title: "Erste Aufgabe" },
   },
   columnOrder: ["col-1", "col-2", "col-3"],
 };

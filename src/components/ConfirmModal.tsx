@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "../LanguageContext";
 
 type Props = {
   isOpen: boolean;
@@ -12,9 +13,12 @@ export default function ConfirmModal({
   isOpen,
   onConfirm,
   onCancel,
-  title = "Delete task",
-  message = "Are you sure you want to delete this task?",
+  title,
+  message,
 }: Props) {
+  const { t } = useTranslation();
+  const modalTitle = title ?? t("deleteTaskTitle");
+  const modalMessage = message ?? t("deleteTaskMessage");
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -42,23 +46,23 @@ export default function ConfirmModal({
         className="bg-white rounded-lg p-4 w-80 shadow-lg flex flex-col gap-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-lg font-semibold">{modalTitle}</h2>
 
-        <p className="text-sm text-gray-600">{message}</p>
+        <p className="text-sm text-gray-600">{modalMessage}</p>
 
         <div className="flex gap-2 pt-2">
           <button
             onClick={onCancel}
             className="w-1/2 px-3 py-2 rounded-md bg-gray-100 text-slate-700 hover:bg-gray-200 cursor-pointer"
           >
-            Cancel
+            {t("cancel")}
           </button>
 
           <button
             onClick={onConfirm}
             className="w-1/2 px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 cursor-pointer"
           >
-            Delete
+            {t("delete")}
           </button>
         </div>
       </div>
