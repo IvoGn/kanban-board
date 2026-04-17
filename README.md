@@ -104,7 +104,7 @@ This project demonstrates:
 
 ## Status
 
-✅ In progress — core kanban MVP is implemented.
+✅ In progress - core kanban MVP is implemented.
 
 The board currently supports creating and deleting cards, drag-and-drop movement across columns, reordering within columns, local persistence, optional backend sync, subtasks, and an editable board title.
 
