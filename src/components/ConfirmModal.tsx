@@ -19,7 +19,11 @@ export default function ConfirmModal({
   const { t } = useTranslation();
   const modalTitle = title ?? t("deleteTaskTitle");
   const modalMessage = message ?? t("deleteTaskMessage");
+
+  // Confirmation dialog with localized text and keyboard handling.
+  // It closes when clicking outside, pressing Escape, or choosing cancel.
   useEffect(() => {
+    // Close the dialog when Escape is pressed.
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onCancel();
@@ -38,6 +42,7 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   return (
+    // The overlay closes the modal when clicked outside the dialog.
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
       onClick={onCancel}

@@ -6,6 +6,8 @@ import Column from "./Column";
 import LanguageSwitch from "./LanguageSwitch";
 import { useTranslation } from "../LanguageContext";
 
+// The main board component renders the page title, the language switch,
+// and the three columns with drag-and-drop support.
 export default function Board() {
   const {
     board,
@@ -15,17 +17,23 @@ export default function Board() {
   } = useBoardStore();
   const { t } = useTranslation();
 
+  // Board state is loaded from store and updates via drag-and-drop events.
+
   const [activeId, setActiveId] = useState<string | null>(null);
   const [title, setTitle] = useState(board.title);
 
+  // Keep the local title field in sync with the board store title.
   useEffect(() => {
     setTitle(board.title);
   }, [board.title]);
 
+  // Remember which card is currently being dragged.
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
   };
 
+  // When the drag ends, determine whether the card moved within the same
+  // column or to a different column and update the store accordingly.
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -74,6 +82,7 @@ export default function Board() {
               <LanguageSwitch />
             </div>
             <section className="mb-8 rounded-[1.75rem] bg-slate-100 p-6">
+              {/* Board title is editable and saved when focus leaves or Enter is pressed. */}
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -90,6 +99,7 @@ export default function Board() {
             </section>
 
             <section className="rounded-[1.75rem] bg-slate-100 px-4 py-5">
+              {/* Render columns in the order specified by the board state. */}
               <div className="grid gap-4 md:grid-cols-3">
                 {board.columnOrder.map((columnId) => {
                   const column = board.columns[columnId];
@@ -104,6 +114,7 @@ export default function Board() {
         <DragOverlay>
         {activeCard ? (
           <div className="bg-white p-2 rounded shadow flex items-center gap-2 text-slate-950">
+            {/* Drag overlay shows the card title while dragging. */}
             <span className="text-gray-400">☰</span>
             {activeCard.title}
           </div>

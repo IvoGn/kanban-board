@@ -1,3 +1,5 @@
+// Translation dictionary used by the language provider and UI components.
+// Keys are shared identifiers, values are the localized strings.
 export const translations = {
   de: {
     languageSwitchLabel: "Sprache:",

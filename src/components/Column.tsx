@@ -20,18 +20,24 @@ export default function Column({ column }: Props) {
   const [title, setTitle] = useState("");
   const [showAddTask, setShowAddTask] = useState(false);
 
+  // Local column state for the add-task form.
+  // showAddTask controls whether the input and buttons appear.
+
   const defaultColumnTitles: Record<string, "columnTodo" | "columnDoing" | "columnDone"> = {
     "col-1": "columnTodo",
     "col-2": "columnDoing",
     "col-3": "columnDone",
   };
 
+  // Column heading is chosen from a translation key if present,
+  // otherwise use a default mapping or fallback to the stored title.
   const columnHeading = column.titleKey
     ? t(column.titleKey)
     : defaultColumnTitles[column.id]
     ? t(defaultColumnTitles[column.id])
     : column.title;
 
+  // Register this column as a drop target for cards.
   const { setNodeRef } = useDroppable({
     id: column.id,
     data: {
@@ -45,6 +51,8 @@ export default function Column({ column }: Props) {
     setTitle("");
     setShowAddTask(false);
   };
+
+  // Add a new card to this column and reset the add form.
 
   return (
     <div

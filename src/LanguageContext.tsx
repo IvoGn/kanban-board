@@ -3,6 +3,7 @@ import { translations, type Language, type TranslationKey } from "./i18n";
 
 const STORAGE_KEY = "kanban-board-language";
 
+// Provides the selected language, update callback, and translation helper.
 type LanguageContextType = {
   language: Language;
   setLanguage: (language: Language) => void;
@@ -18,6 +19,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return saved === "en" ? "en" : "de";
   });
 
+  // Persist chosen language across page reloads.
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY, language);

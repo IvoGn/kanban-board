@@ -18,6 +18,10 @@ export default function Card({ card, columnId }: Props) {
   const { t } = useTranslation();
   const [subtaskTitle, setSubtaskTitle] = useState("");
 
+  // Each card has its own local UI state for adding subtasks and showing modals.
+
+  // Make this card draggable with dnd-kit sortable support.
+  // Enable drag-and-drop behavior for this card.
   const {
     attributes,
     listeners,
@@ -38,8 +42,13 @@ export default function Card({ card, columnId }: Props) {
     opacity: isDragging ? 0 : 1,
   };
 
+  // Apply drag styles while the card is being moved.
+
   const [showModal, setShowModal] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
+
+  // The confirmation modal is shown when the delete button is clicked.
+  // showAddTask toggles the inline subtask form.
 
   return (
     <div
@@ -59,6 +68,7 @@ export default function Card({ card, columnId }: Props) {
           {card.title}
         </span>
 
+        {/* Open the confirmation modal instead of deleting immediately. */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -72,6 +82,7 @@ export default function Card({ card, columnId }: Props) {
       </div>
 
       <div className="mt-4 w-full">
+        {/* Show a completion summary only when subtasks exist. */}
         {card.subtasks && card.subtasks.length > 0 ? (
           <div className="mb-2 flex items-center justify-between gap-2 text-sm text-slate-500">
             <span>
@@ -112,6 +123,7 @@ export default function Card({ card, columnId }: Props) {
           ))}
         </div>
 
+        {/* Render the add-subtask form when the button is clicked. */}
         {showAddTask ? (
           <div className="space-y-2">
             <input
@@ -166,6 +178,7 @@ export default function Card({ card, columnId }: Props) {
         )}
       </div>
 
+      {/* Confirmation modal to prevent accidental card deletion. */}
       <ConfirmModal
         isOpen={showModal}
         onCancel={() => setShowModal(false)}

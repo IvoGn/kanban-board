@@ -1,9 +1,13 @@
 import { create } from "zustand";
 import type { Board } from "../types";
 
+// Backend endpoint used for optional server persistence.
 const BACKEND_URL = "http://localhost:4000";
+
+// Local storage key used to keep board state across reloads.
 const LOCAL_STORAGE_KEY = "kanban-board-state";
 
+// Default board state loaded when no saved state is available.
 const defaultBoard: Board = {
   title: "Produkt-Launch-Board",
   columns: {
@@ -32,6 +36,7 @@ const defaultBoard: Board = {
   columnOrder: ["col-1", "col-2", "col-3"],
 };
 
+// Load board state from localStorage if present, otherwise fall back to default.
 const loadSavedBoard = (): Board => {
   if (typeof window === "undefined") return defaultBoard;
 
@@ -66,6 +71,7 @@ type BoardState = {
 export const useBoardStore = create<BoardState>((set, get) => ({
   board: loadSavedBoard(),
 
+  // Try to load the board from the backend API and keep the local cache in sync.
   loadBoard: async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/board`);
@@ -85,6 +91,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
+  // Persist board state locally and send it to the backend if available.
   saveBoard: async (board: Board) => {
     try {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(board));
@@ -105,6 +112,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   setBoard: (board: Board) => set({ board }),
 
+  // Update the board title and save the new state.
   setBoardTitle: (title: string) =>
     set((state) => {
       const board = {
@@ -115,6 +123,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Create a new card in the specified column and persist the updated board.
   addCard: (columnId: string, title: string) =>
     set((state) => {
       const newId = crypto.randomUUID();
@@ -137,6 +146,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Add a subtask to the selected card and persist changes.
   addSubtask: (cardId: string, title: string) =>
     set((state) => {
       const card = state.board.cards[cardId];
@@ -161,6 +171,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Toggle the completion status for a subtask.
   toggleSubtask: (cardId: string, subtaskId: string) =>
     set((state) => {
       const card = state.board.cards[cardId];
@@ -205,6 +216,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Remove a card and its reference from the column.
   deleteCard: (cardId: string, columnId: string) =>
     set((state) => {
       const newCards = { ...state.board.cards };
@@ -227,6 +239,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Move a card from one column to another.
   moveCard: (cardId: string, fromColumn: string, toColumn: string) =>
     set((state) => {
       if (fromColumn === toColumn) return state;
@@ -255,6 +268,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { board };
     }),
 
+  // Reorder cards within the same column.
   moveCardWithinColumn: (
     columnId: string,
     activeId: string,

@@ -1,6 +1,7 @@
 import { useTranslation } from "../LanguageContext";
 import { type Language } from "../i18n";
 
+// Available language options exposed in the UI.
 const languageOptions: Array<{ value: Language; labelKey: "languageDe" | "languageEn" }> = [
   { value: "de", labelKey: "languageDe" },
   { value: "en", labelKey: "languageEn" },
